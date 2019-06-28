@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: db-stream
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: k8s-node01:9092,k8s-node02:9092,k8s-node03:9092
+#          brokers: k8s-node01:9092
+         # auto-add-partitions: true
+          auto-create-topics: true
+          min-partition-count: 1
+          replication-factor: 3
+          producer-properties:
+            max:
+              request:
+                size: 26214400
+          configuration:
+            max:
+              request:
+                size: 26214400
+            bootstrap-server: k8s-node01:9092,k8s-node03:9092
+
+      bindings:
+        fund_input:
+          destination: test10
+          #group: demo2
+          consumer:
+            #partitionCount: 3
+            concurrency: 3
+            maxAttempts: 10
+            partitioned: false
+#            instanceCount: 1
+#            instanceIndex: 0
+
+
+
+        fund_output:
+          destination: test10
+          #group: demo2
+          producer:
+            sync: true
+           # artitionCount: 3
+server:
+  port: 8200
+logger:
+  level: debug
